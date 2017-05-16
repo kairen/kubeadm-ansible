@@ -1,0 +1,17 @@
+---
+
+kube_version: v1.6.2
+token: b0f7b8.8d1767876297d85c
+
+service_subnet: 10.96.0
+service_cidr: "{{ service_subnet }}.0/12"
+dns_name: cluster.local
+dns_ip: "{{ service_subnet }}.10"
+
+# Network implementation('flannel', 'calico')
+network: flannel
+pod_network_cidr: 10.244.0.0/16
+flannel_opts: --iface=enp0s8
+# A list of insecure registrys you might need to define
+insecure_registrys:
+# - "gcr.io"

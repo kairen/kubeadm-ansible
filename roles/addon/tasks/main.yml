@@ -1,0 +1,45 @@
+---
+
+- name: Create Kubernetes addon directory
+  file: path={{ kube_addon_dir }} state=directory
+
+- name: Copy Kubernetes dashboard RBAC yml file
+  template: src=kube-dash-rbac.yml.j2  dest={{ kube_addon_dir }}/kube-dash-rbac.yml
+
+- name: Copy Kubernetes dashboard yml file
+  template: src=kube-dash.yml.j2  dest={{ kube_addon_dir }}/kube-dash.yml
+
+- name: Check Kubernetes dashboard role already exists
+  shell: |
+    kubectl --kubeconfig={{ kubeadmin_config }} \
+            get clusterrolebinding | grep kubernetes-dashboard
+  delegate_to: "{{ groups['master'][0] }}"
+  run_once: true
+  register: check_role
+  ignore_errors: true
+
+- name: Create Kubernetes dashboard role
+  when: check_role|failed
+  shell: |
+    kubectl create --kubeconfig={{ kubeadmin_config }} \
+                   -f {{ kube_addon_dir }}/kube-dash-rbac.yml
+  delegate_to: "{{ groups['master'][0] }}"
+  run_once: true
+  register: create_role
+
+- name: Check Kubernetes dashboard is working
+  shell: |
+    kubectl --kubeconfig={{ kubeadmin_config }} \
+            get po --all-namespaces | grep kubernetes-dashboard
+  delegate_to: "{{ groups['master'][0] }}"
+  run_once: true
+  register: check_dash
+  ignore_errors: true
+
+- name: Create Kubernetes dashboard deployment
+  when: check_dash|failed
+  shell: |
+    kubectl create --kubeconfig={{ kubeadmin_config }} \
+                   -f {{ kube_addon_dir }}/kube-dash.yml
+  delegate_to: "{{ groups['master'][0] }}"
+  run_once: true

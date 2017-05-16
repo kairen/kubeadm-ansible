@@ -1,0 +1,38 @@
+---
+
+- name: Init Kubernetes cluster
+  shell: |
+    kubeadm init --service-cidr {{ service_cidr }} \
+                 --kubernetes-version {{ kube_version }} \
+                 --pod-network-cidr {{ pod_network_cidr }} \
+                 --apiserver-advertise-address {{ groups['master'][0] }} \
+                 --token {{ token }} \
+                 --skip-preflight-checks
+  run_once: true
+  register: init_cluster
+
+- name: Copy admin.conf to Home directory
+  when: init_cluster
+  copy:
+    src: "{{ kubeadmin_config }}"
+    dest: "/root"
+    owner: root
+    group: root
+    mode: 0755
+    remote_src: True
+
+- name: Override config file directory for Debian
+  when: ansible_os_family == "Debian"
+  set_fact:
+    dropin_dir: "/etc/systemd/system"
+
+- name: Copy kubeadm conf to drop-in directory
+  template: src=10-kubeadm.conf.j2 dest={{ dropin_dir }}/kubelet.service.d/10-kubeadm.conf
+
+- name: Enable and restart kubelet engine
+  systemd:
+    name: kubelet
+    daemon_reload: yes
+    state: restarted
+    enabled: yes
+  register: started_kubelet

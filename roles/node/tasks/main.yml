@@ -1,0 +1,24 @@
+---
+
+- name: Join to Kubernetes cluster
+  shell: |
+    kubeadm join --skip-preflight-checks \
+                 --token {{ token }} \
+                 {{ groups['master'][0] }}:6443
+  register: join_cluster
+
+- name: Override config file directory for Debian
+  when: ansible_os_family == "Debian"
+  set_fact:
+    dropin_dir: "/etc/systemd/system"
+
+- name: Copy kubeadm conf to drop-in directory
+  template: src=10-kubeadm.conf.j2 dest={{ dropin_dir }}/kubelet.service.d/10-kubeadm.conf
+
+- name: Enable and restart kubelet engine
+  systemd:
+    name: kubelet
+    daemon_reload: yes
+    state: restarted
+    enabled: yes
+  register: started_kubelet

@@ -1,0 +1,31 @@
+---
+# Fact os vars
+
+- name: Get os_version from /etc/os-release
+  when: ansible_os_family is not defined
+  raw: "grep '^VERSION_ID=' /etc/os-release | sed s'/VERSION_ID=//'"
+  register: os_version
+
+- name: Get distro name from /etc/os-release
+  when: ansible_os_family is not defined
+  raw: "grep '^NAME=' /etc/os-release | sed s'/NAME=//'"
+  register: distro
+
+- name: Set fact ansible_os_family var to Debian
+  when:
+    - ansible_os_family is not defined
+    - "'Ubuntu' in distro.stdout"
+  set_fact:
+    ansible_os_family: Debian
+
+- name: Set fact ansible_os_family var to RedHat
+  when:
+    - ansible_os_family is not defined
+    - "'CentOS' in distro.stdout"
+  set_fact:
+    ansible_os_family: RedHat
+
+- name: Override config file directory for Debian
+  when: ansible_os_family == "Debian"
+  set_fact:
+    system_env_dir: "/etc/default"

@@ -1,0 +1,37 @@
+---
+
+- name: Add Docker APT GPG key
+  when: ansible_os_family == "Debian"
+  apt_key:
+    keyserver: hkp://ha.pool.sks-keyservers.net:80
+    id: 58118E89F3A912897C070ADBF76221572C52609D
+
+- name: Add Docker APT repository
+  when: ansible_os_family == "Debian"
+  apt_repository:
+    repo: deb https://apt.dockerproject.org/repo ubuntu-xenial main
+    state: present
+    filename: 'docker'
+
+- name: Add Docker yum repository
+  when: ansible_os_family == "RedHat"
+  yum_repository:
+    name: Docker
+    description: Docker Repository
+    file: docker
+    baseurl: https://yum.dockerproject.org/repo/main/centos/7/
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: https://yum.dockerproject.org/gpg
+
+- name: Install docker engine (RHEL/CentOS)
+  when: ansible_os_family == "RedHat"
+  yum:
+   name: "docker-engine"
+   state: present
+
+- name: Install docker engine (Debian/Ubuntu)
+  when: ansible_os_family == "Debian"
+  apt:
+    name: "docker-engine"
+    state: present

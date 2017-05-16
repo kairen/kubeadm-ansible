@@ -1,0 +1,26 @@
+---
+
+- hosts: cluster
+  gather_facts: no
+  become: yes
+  roles:
+    - { role: docker, tags: docker }
+
+- hosts: master
+  gather_facts: no
+  become: yes
+  roles:
+    - { role: master, tags: master }
+
+- hosts: node
+  gather_facts: no
+  become: yes
+  roles:
+    - { role: node, tags: node }
+
+- hosts: master
+  gather_facts: no
+  become: yes
+  roles:
+    - { role: cni, tags: cni }
+    - { role: addon, tags: addon }

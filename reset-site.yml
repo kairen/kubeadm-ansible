@@ -1,0 +1,16 @@
+---
+
+- hosts: cluster
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: Reset Kubernetes component
+      shell: "kubeadm reset"
+
+    - name: Delete flannel.1 interface
+      command: ip link delete flannel.1
+      ignore_errors: True
+
+    - name: Delete cni0 interface
+      command: ip link delete cni0
+      ignore_errors: True

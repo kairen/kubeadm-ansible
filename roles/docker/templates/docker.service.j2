@@ -1,0 +1,28 @@
+[Unit]
+Description=Docker Engine
+After=network.target
+
+[Service]
+Type=notify
+EnvironmentFile=-{{ system_env_dir }}/docker
+ExecStartPost=/sbin/iptables -I FORWARD -s 0.0.0.0/0 -j ACCEPT
+ExecStart=/usr/bin/dockerd {% if ansible_os_family == 'Debian' -%} -H fd:// {% endif -%} \
+  $OPTIONS \
+  $DOCKER_STORAGE_OPTIONS \
+  $DOCKER_OPTS \
+  $DOCKER_NETWORK_OPTIONS \
+  $ADD_REGISTRY \
+  $BLOCK_REGISTRY \
+  $INSECURE_REGISTRY
+
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=on-failure
+LimitNOFILE=1048576
+LimitNPROC=infinity
+LimitCORE=infinity
+TimeoutStartSec=0
+Delegate=yes
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
