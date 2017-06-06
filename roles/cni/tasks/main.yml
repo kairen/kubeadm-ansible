@@ -1,49 +1,49 @@
 ---
 
+- name: "Set fact {{ network }} cni variable"
+  set_fact:
+    cni: "{{ vars[network] }}"
+
 - name: Create Kubernetes addon directory
   file: path={{ network_dir }} state=directory
 
-- name: Copy Flannel RBAC yml file
-  when: network == 'flannel'
-  template: src=flannel-rbac.yml.j2 dest={{ network_dir }}/flannel-rbac.yml
+- name: "Copy {{ cni.name }} RBAC yml file"
+  template: src="{{ cni.template.rbac }}.j2" dest={{ network_dir }}/{{ cni.template.rbac }}
 
-- name: Copy Flannel yml file
-  when: network == 'flannel'
-  template: src=flannel.yml.j2 dest={{ network_dir }}/flannel.yml
+- name: "Copy {{ cni.name }} yml file"
+  template: src="{{ cni.template.ds }}.j2" dest={{ network_dir }}/{{ cni.template.ds }}
 
-- name: Check Flannel cluster role already exists
-  when: network == 'flannel'
+- name: "Check {{ cni.name }} cluster role already exists"
   shell: |
     kubectl --kubeconfig={{ kubeadmin_config }} \
-            get clusterrole | grep flannel
+            get clusterrole | grep {{ cni.name }}
   delegate_to: "{{ groups['master'][0] }}"
   run_once: true
   register: check_role
   ignore_errors: true
 
-- name: Create Flannel cluster role
-  when: network == 'flannel' and check_role|failed
+- name: "Create {{ cni.name }} cluster role"
+  when: check_role|failed
   shell: |
     kubectl create --kubeconfig={{ kubeadmin_config }} \
-                   -f {{ network_dir }}/flannel-rbac.yml
+                   -f {{ network_dir }}/{{ cni.template.rbac }}
   delegate_to: "{{ groups['master'][0] }}"
   run_once: true
   register: create_role
 
-- name: Check Flannel daemonset is working
-  when: network == 'flannel'
+- name: "Check {{ cni.name }} daemonset is working"
   shell: |
     kubectl --kubeconfig={{ kubeadmin_config }} \
-            get ds --all-namespaces | grep kube-flannel-ds
+            get ds --all-namespaces | grep {{ cni.name }}
   delegate_to: "{{ groups['master'][0] }}"
   run_once: true
   register: check_net
   ignore_errors: true
 
-- name: Create Flannel network daemonset
-  when: network == 'flannel' and check_net|failed
+- name: "Create {{ cni.name }} network daemonset"
+  when: check_net|failed
   shell: |
     kubectl create --kubeconfig={{ kubeadmin_config }} \
-                   -f {{ network_dir }}/flannel.yml
+                   -f {{ network_dir }}/{{ cni.template.ds }}
   delegate_to: "{{ groups['master'][0] }}"
   run_once: true
