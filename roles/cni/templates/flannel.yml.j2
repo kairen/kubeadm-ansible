@@ -56,7 +56,12 @@ spec:
       containers:
       - name: kube-flannel
         image: quay.io/coreos/flannel:v0.7.1-amd64
-        command: [ "/opt/bin/flanneld", "--ip-masq", "--kube-subnet-mgr", "{{ flannel_opts }}" ]
+        command: [
+          "/opt/bin/flanneld",
+          "--ip-masq",
+          "--kube-subnet-mgr",
+          "{{ cni_opts }}"
+        ]
         securityContext:
           privileged: true
         env:

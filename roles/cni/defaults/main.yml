@@ -5,3 +5,9 @@ flannel:
   template:
     ds: flannel.yml
     rbac: flannel-rbac.yml
+
+calico:
+  name: calico
+  template:
+    ds: calico.yml
+    rbac: calico-rbac.yml
