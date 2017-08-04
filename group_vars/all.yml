@@ -1,6 +1,6 @@
 ---
 
-kube_version: v1.6.5
+kube_version: v1.7.3
 token: b0f7b8.8d1767876297d85c
 
 service_subnet: 10.96.0
