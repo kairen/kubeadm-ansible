@@ -11,11 +11,14 @@
   run_once: true
   register: init_cluster
 
+- name: Create Kubernetes config directory
+  file: path=/root/.kube/ state=directory
+
 - name: Copy admin.conf to Home directory
   when: init_cluster
   copy:
     src: "{{ kubeadmin_config }}"
-    dest: "/root"
+    dest: "/root/.kube/config"
     owner: root
     group: root
     mode: 0755
@@ -26,7 +29,7 @@
   set_fact:
     dropin_dir: "/etc/systemd/system"
 
-- name: Copy kubeadm conf to drop-in directory
+- name: Copy kubeadm.conf to drop-in directory
   template: src=10-kubeadm.conf.j2 dest={{ dropin_dir }}/kubelet.service.d/10-kubeadm.conf
 
 - name: Enable and restart kubelet engine
