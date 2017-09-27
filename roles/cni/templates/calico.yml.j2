@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: calico-policy-controller
+  namespace: kube-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: calico-cni-plugin
+  namespace: kube-system
+---
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -51,7 +63,7 @@ spec:
       hostNetwork: true
       containers:
         - name: calico-etcd
-          image: gcr.io/google_containers/etcd:2.2.1
+          image: quay.io/coreos/etcd:v3.1.10
           env:
             - name: CALICO_ETCD_IP
               valueFrom:
@@ -80,7 +92,6 @@ spec:
   clusterIP: 10.96.232.136
   ports:
     - port: 6666
-
 ---
 kind: DaemonSet
 apiVersion: extensions/v1beta1
@@ -109,7 +120,7 @@ spec:
       serviceAccountName: calico-cni-plugin
       containers:
         - name: calico-node
-          image: quay.io/calico/node:v1.3.0
+          image: quay.io/calico/node:v2.5.1
           env:
             - name: ETCD_ENDPOINTS
               valueFrom:
@@ -152,7 +163,7 @@ spec:
               name: var-run-calico
               readOnly: false
         - name: install-cni
-          image: quay.io/calico/cni:v1.9.1
+          image: quay.io/calico/cni:v1.10.0
           command: ["/install-cni.sh"]
           env:
             - name: ETCD_ENDPOINTS
@@ -183,7 +194,6 @@ spec:
         - name: cni-net-dir
           hostPath:
             path: /etc/cni/net.d
-
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -214,7 +224,7 @@ spec:
       serviceAccountName: calico-policy-controller
       containers:
         - name: calico-policy-controller
-          image: quay.io/calico/kube-policy-controller:v0.6.0
+          image: quay.io/calico/kube-policy-controller:v0.7.0
           env:
             - name: ETCD_ENDPOINTS
               valueFrom:
