@@ -33,5 +33,6 @@
 - name: Install docker engine (Debian/Ubuntu)
   when: ansible_os_family == "Debian"
   apt:
+    update_cache: yes
     name: "docker-engine"
     state: present
