@@ -1,4 +1,4 @@
 ---
 dependencies:
   - { role: common }
-  - { role: kubernetes }
+  - { role: kubernetes, pkgs: [ "kubectl", "kubelet", "kubernetes-cni", "kubeadm" ] }
