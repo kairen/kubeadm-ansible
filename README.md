@@ -7,15 +7,16 @@ System requirement:
 
 Add the system information gathered above into a file called `inventory`. For example:
 ```
-[master]
+master]
 192.16.35.12
 
 [node]
 192.16.35.[10:11]
 
-[cluster:children]
+[kube-cluster:children]
 master
 node
+
 ```
 
 After going through the setup, run the `site.yml` playbook:
