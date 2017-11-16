@@ -1,6 +1,6 @@
 ---
 
-kube_version: v1.8.2
+kube_version: v1.8.3
 token: b0f7b8.8d1767876297d85c
 
 # 1.8.x feature: --feature-gates SelfHosting=true
@@ -14,7 +14,7 @@ dns_ip: "{{ service_subnet }}.10"
 # Network implementation('flannel', 'calico')
 network: calico
 pod_network_cidr: 10.244.0.0/16
-cni_opts: interface=enp0s8 # flannel: --iface=enp0s8, calico: interface=enp0s8
+cni_opts: interface=eth1 # flannel: --iface=eth1, calico: interface=eth1
 
 # A list of insecure registrys you might need to define
 insecure_registrys:
