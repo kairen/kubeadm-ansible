@@ -1,7 +1,7 @@
 ---
 
 - name: Install Docker container engine
-  include: pkg.yml
+  include_tasks: pkg.yml
 
 - name: Copy Docker engine service file
   register: change_docker

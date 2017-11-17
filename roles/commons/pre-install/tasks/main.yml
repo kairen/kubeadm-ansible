@@ -1,7 +1,7 @@
 ---
 
 - name: Install Kubernetes packages
-  include: pkg.yml
+  include_tasks: pkg.yml
 
 - name: Pass bridged IPv4 traffic to iptables’ chains
   shell: "sysctl net.bridge.bridge-nf-call-iptables=1"

@@ -2,12 +2,12 @@
 Build a Kubernetes cluster using Ansible with kubeadm. The goal is easily install a Kubernetes cluster on machines running `Ubuntu 16.04`, `CentOS 7`.
 
 System requirement:
-* Deploy node must be install `Ansible v2.1.0+`.
+* Deploy node must be install `Ansible v2.4.0+`.
 * All Master/Node should have password-less access from Deploy node.
 
 Add the system information gathered above into a file called `inventory`. For example:
 ```
-master]
+[master]
 192.16.35.12
 
 [node]
@@ -16,7 +16,6 @@ master]
 [kube-cluster:children]
 master
 node
-
 ```
 
 After going through the setup, run the `site.yml` playbook:
