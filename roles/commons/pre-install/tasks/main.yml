@@ -3,6 +3,9 @@
 - name: Install Kubernetes packages
   include_tasks: pkg.yml
 
+- name: Disable system swap
+  shell: "swapoff -a && sysctl -w vm.swappiness=0"
+  
 - name: Pass bridged IPv4 traffic to iptables’ chains
   shell: "sysctl net.bridge.bridge-nf-call-iptables=1"
 
