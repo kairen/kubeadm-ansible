@@ -9,7 +9,7 @@
 - name: Remove current swaps from fstab
   lineinfile:
     dest: /etc/fstab
-    regexp: '(?i)^([^#][\S]+\s+none\s+swap.*)'
+    regexp: '(?i)^([^#][\S]+\s+(none|swap)\s+swap.*)'
     line: '# \1'
     backrefs: yes
     state: present
