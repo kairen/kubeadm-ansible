@@ -4,10 +4,24 @@
   include_tasks: pkg.yml
 
 - name: Disable system swap
-  shell: "swapoff -a && sysctl -w vm.swappiness=0"
-  
-- name: Pass bridged IPv4 traffic to iptables’ chains
-  shell: "sysctl net.bridge.bridge-nf-call-iptables=1"
+  shell: "swapoff -a"
+
+- name: Remove current swaps from fstab
+  lineinfile:
+    dest: /etc/fstab
+    regexp: '(?i)^([^#][\S]+\s+none\s+swap.*)'
+    line: '# \1'
+    backrefs: yes
+    state: present
+
+- name: Disable swappiness and pass bridged IPv4 traffic to iptable's chains
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+  with_items:
+    - { name: 'vm.swappiness', value: '0' }
+    - { name: 'net.bridge.bridge-nf-call-iptables', value: '1' }
 
 - name: Override config file directory for Debian
   when: ansible_os_family == "Debian"
