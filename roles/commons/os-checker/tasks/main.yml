@@ -5,11 +5,13 @@
   when: ansible_os_family is not defined
   raw: "grep '^VERSION_ID=' /etc/os-release | sed s'/VERSION_ID=//'"
   register: os_version
+  changed_when: False
 
 - name: Get distro name from /etc/os-release
   when: ansible_os_family is not defined
   raw: "grep '^NAME=' /etc/os-release | sed s'/NAME=//'"
   register: distro
+  changed_when: False
 
 - name: Set fact ansible_os_family var to Debian
   when:
