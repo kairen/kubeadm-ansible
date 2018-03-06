@@ -12,6 +12,7 @@
                  --pod-network-cidr {{ pod_network_cidr }} \
                  --apiserver-advertise-address {{ groups['master'][0] }} \
                  --token {{ token }} \
+                 {{ kubeadm_opts }} \
                  {{ init_opts }}
   register: init_cluster
 
