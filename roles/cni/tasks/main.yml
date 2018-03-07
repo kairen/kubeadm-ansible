@@ -7,29 +7,8 @@
 - name: Create Kubernetes addon directory
   file: path={{ network_dir }} state=directory
 
-- name: "Copy {{ cni.name }} RBAC yml file"
-  template: src="{{ cni.template.rbac }}.j2" dest={{ network_dir }}/{{ cni.template.rbac }}
-
 - name: "Copy {{ cni.name }} yml file"
   template: src="{{ cni.template.ds }}.j2" dest={{ network_dir }}/{{ cni.template.ds }}
-
-- name: "Check {{ cni.name }} cluster role already exists"
-  shell: |
-    kubectl --kubeconfig={{ kubeadmin_config }} \
-            get clusterrole | grep {{ cni.name }}
-  delegate_to: "{{ groups['master'][0] }}"
-  run_once: true
-  register: check_role
-  ignore_errors: true
-
-- name: "Create {{ cni.name }} cluster role"
-  when: check_role|failed
-  shell: |
-    kubectl create --kubeconfig={{ kubeadmin_config }} \
-                   -f {{ network_dir }}/{{ cni.template.rbac }}
-  delegate_to: "{{ groups['master'][0] }}"
-  run_once: true
-  register: create_role
 
 - name: "Check {{ cni.name }} daemonset is working"
   shell: |

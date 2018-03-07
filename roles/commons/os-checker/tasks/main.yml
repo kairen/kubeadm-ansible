@@ -16,6 +16,13 @@
 - name: Set fact ansible_os_family var to Debian
   when:
     - ansible_os_family is not defined
+    - "'Debian' in distro.stdout"
+  set_fact:
+    ansible_os_family: Debian
+
+- name: Set fact ansible_os_family var to Debian
+  when:
+    - ansible_os_family is not defined
     - "'Ubuntu' in distro.stdout"
   set_fact:
     ansible_os_family: Debian
