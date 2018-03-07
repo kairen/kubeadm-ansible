@@ -6,6 +6,11 @@ token: b0f7b8.8d1767876297d85c
 # 1.8.x feature: --feature-gates SelfHosting=true
 init_opts: ""
 
+# Any other additional opts you want to add.. 
+kubeadm_opts: ""
+# For example:
+# kubeadm_opts: '--apiserver-cert-extra-sans "k8s.domain.com,kubernetes.domain.com"'
+
 service_subnet: 10.96.0
 service_cidr: "{{ service_subnet }}.0/12"
 dns_name: cluster.local
