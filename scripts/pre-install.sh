@@ -46,7 +46,7 @@ if [ ${HOST_NAME} == "master1" ]; then
   cd /vagrant
   set_hosts
   sudo cp ~/hosts /etc/
-  sudo ansible-playbook site.yml
+  sudo ansible-playbook site.yaml
 else
   set_hosts
   sudo cp ~/hosts /etc/
