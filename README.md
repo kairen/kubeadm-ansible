@@ -1,9 +1,17 @@
 # Kubeadm Ansible Playbook
-Build a Kubernetes cluster using Ansible with kubeadm. The goal is easily install a Kubernetes cluster on machines running `Ubuntu 16.04`, `CentOS 7`.
 
-System requirement:
-* Deploy node must be install `Ansible v2.4.0+`.
-* All Master/Node should have password-less access from Deploy node.
+Build a Kubernetes cluster using Ansible with kubeadm. The goal is easily install a Kubernetes cluster on machines running:
+
+  - Ubuntu 16.04
+  - CentOS 7
+  - Debian 9
+
+System requirements:
+
+  - Deployment environment must have Ansible `2.4.0`
+  - Master and nodes must have passwordless SSH access
+
+# Usage
 
 Add the system information gathered above into a file called `inventory`. For example:
 ```
@@ -19,6 +27,7 @@ node
 ```
 
 After going through the setup, run the `site.yaml` playbook:
+
 ```sh
 $ ansible-playbook site.yaml
 ...
@@ -31,8 +40,16 @@ $ ansible-playbook site.yaml
 ==> master1: 192.16.35.12               : ok=34   changed=29   unreachable=0    failed=0
 ```
 
-Verify cluster is fully running using kubectl:
+Download the `admin.conf` from the master node:
+
 ```sh
+$ scp k8s@k8s-master:/etc/kubernetes/admin.conf .
+```
+
+Verify cluster is fully running using kubectl:
+
+```sh
+
 $ export KUBECONFIG=~/admin.conf
 $ kubectl get node
 NAME      STATUS    AGE       VERSION
@@ -46,7 +63,10 @@ etcd-master1                            1/1       Running   0          23m
 ...
 ```
 
+# Resetting the environment
+
 Finally, reset all kubeadm installed state using `reset-site.yaml` playbook:
+
 ```sh
 $ ansible-playbook reset-site.yaml
 ```
