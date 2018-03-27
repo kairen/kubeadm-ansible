@@ -16,15 +16,20 @@
   register: init_cluster
 
 - name: Create Kubernetes config directory
-  file: path=/{{ ansible_user_id }}/.kube/ state=directory
+  become: false
+  file: path="~/.kube/" state=directory
+
+- name: Change permissions of .kube/config
+  file: path=/etc/kubernetes/admin.conf mode=0775
 
 - name: Copy admin.conf to Home directory
   when: init_cluster
+  become: false
   copy:
     src: "{{ kubeadmin_config }}"
-    dest: "/{{ ansible_user_id }}/.kube/config"
-    owner: {{ ansible_user_id }}
-    group: {{ ansible_user_id }}
+    dest: "~/.kube/config"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
     mode: 0755
     remote_src: True
 
