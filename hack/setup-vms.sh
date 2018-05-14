@@ -9,9 +9,9 @@ cat <<EOF > ~/hosts
 127.0.0.1   localhost
 ::1         localhost
 
-192.16.35.10 node1
-192.16.35.11 node2
-192.16.35.12 master1
+192.16.35.10 k8s-n1
+192.16.35.11 k8s-n2
+192.16.35.12 k8s-m1
 
 EOF
 }
@@ -20,7 +20,7 @@ set -e
 HOST_NAME=$(hostname)
 OS_NAME=$(awk -F= '/^NAME/{print $2}' /etc/os-release | grep -o "\w*"| head -n 1)
 
-if [ ${HOST_NAME} == "master1" ]; then
+if [ ${HOST_NAME} == "k8s-m1" ]; then
   case "${OS_NAME}" in
     "CentOS")
       sudo yum install -y epel-release

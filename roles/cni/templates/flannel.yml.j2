@@ -62,7 +62,7 @@ data:
     }
   net-conf.json: |
     {
-      "Network": "10.244.0.0/16",
+      "Network": "{{ pod_network_cidr }}",
       "Backend": {
         "Type": "vxlan"
       }
@@ -108,7 +108,13 @@ spec:
       containers:
       - name: kube-flannel
         image: quay.io/coreos/flannel:v0.9.1-amd64
-        command: [ "/opt/bin/flanneld", "--ip-masq", "--kube-subnet-mgr" ]
+        command:
+          - /opt/bin/flanneld
+          - --ip-masq
+          {% if cni_opts != '' -%}
+          - {{ cni_opts }}
+          {% endif -%}
+          - --kube-subnet-mgr
         securityContext:
           privileged: true
         env:
