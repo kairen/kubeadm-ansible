@@ -1,0 +1,33 @@
+# Kubernetes
+kube_version: v1.10.2
+token: b0f7b8.8d1767876297d85c
+
+# 1.8.x feature: --feature-gates SelfHosting=true
+init_opts: ""
+
+# Any other additional opts you want to add..
+kubeadm_opts: ""
+# For example:
+# kubeadm_opts: '--apiserver-cert-extra-sans "k8s.domain.com,kubernetes.domain.com"'
+
+service_subnet: 10.96.0
+service_cidr: "{{ service_subnet }}.0/12"
+dns_name: cluster.local
+dns_ip: "{{ service_subnet }}.10"
+
+# Network implementation('flannel', 'calico')
+network: calico
+pod_network_cidr: "10.244.0.0/16"
+cni_opts: "interface=eth1" # flannel: --iface=eth1, calico: interface=eth1
+
+enable_dashboard: yes
+
+# A list of insecure registrys you might need to define
+insecure_registrys: ""
+# insecure_registrys: ['gcr.io']
+
+systemd_dir: /lib/systemd/system
+system_env_dir: /etc/sysconfig
+network_dir: /etc/kubernetes/network
+kubeadmin_config: /etc/kubernetes/admin.conf
+kube_addon_dir: /etc/kubernetes/addon

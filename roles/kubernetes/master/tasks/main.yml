@@ -11,6 +11,7 @@
                  --kubernetes-version {{ kube_version }} \
                  --pod-network-cidr {{ pod_network_cidr }} \
                  --token {{ token }} \
+                 --apiserver-advertise-address {{ groups['master'][0] }} \
                  {{ kubeadm_opts }} \
                  {{ init_opts }}
   register: init_cluster
@@ -23,7 +24,7 @@
   file: path=/etc/kubernetes/admin.conf mode=0775
 
 - name: Copy admin.conf to Home directory
-  when: init_cluster
+  when: init_cluster and ansible_user is defined
   become: false
   copy:
     src: "{{ kubeadmin_config }}"
@@ -39,4 +40,6 @@
     daemon_reload: yes
     state: restarted
     enabled: yes
+  notify:
+  - "Deploy kubernetes dashboard into cluster"
   register: started_kubelet

@@ -11,16 +11,10 @@
   become: yes
   roles:
     - { role: kubernetes/master, tags: master }
+    - { role: cni, tags: cni }
 
 - hosts: node
   gather_facts: yes
   become: yes
   roles:
     - { role: kubernetes/node, tags: node }
-
-- hosts: master
-  gather_facts: yes
-  become: yes
-  roles:
-    - { role: cni, tags: cni }
-    - { role: addon, tags: addon }
