@@ -13,7 +13,7 @@ System requirements:
 
 # Usage
 
-Add the system information gathered above into a file called `inventory`. For example:
+Add the system information gathered above into a file called `hosts.ini`. For example:
 ```
 [master]
 192.16.35.12
