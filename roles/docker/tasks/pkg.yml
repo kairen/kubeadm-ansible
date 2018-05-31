@@ -1,4 +1,9 @@
 ---
+- name: Install apt-transport-https
+  when: ansible_os_family == "Debian"
+  apt:
+    name: "apt-transport-https"
+    state: present
 
 - name: Add Docker APT GPG key
   when: ansible_os_family == "Debian"
