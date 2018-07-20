@@ -1,5 +1,5 @@
 # Kubernetes
-kube_version: v1.10.2
+kube_version: v1.11.1
 token: b0f7b8.8d1767876297d85c
 
 # 1.8.x feature: --feature-gates SelfHosting=true
