@@ -26,6 +26,17 @@ master
 node
 ```
 
+Before continuing, edit `group_vars/all.yml` to your specified configuration.
+
+For example, I choose to run `flannel` instead of calico, and thus:
+
+```yaml
+# Network implementation('flannel', 'calico')
+network: flannel
+```
+
+**Note:** Depending on your setup, you may need to modify `cni_opts` to an available network interface. By default, `kubeadm-ansible` uses `eth1`. Your default interface may be `eth0`.
+
 After going through the setup, run the `site.yaml` playbook:
 
 ```sh
