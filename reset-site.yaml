@@ -5,13 +5,15 @@
   become: yes
   tasks:
     - name: Reset Kubernetes component
-      shell: "kubeadm reset"
+      shell: "kubeadm reset --force"
       ignore_errors: True
 
     - name: Delete flannel.1 interface
       command: ip link delete flannel.1
+      when: network == "flannel"
       ignore_errors: True
 
     - name: Delete cni0 interface
       command: ip link delete cni0
+      when: network == "flannel"
       ignore_errors: True
