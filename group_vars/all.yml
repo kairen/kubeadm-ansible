@@ -1,3 +1,6 @@
+# Ansible
+# ansible_user: root
+
 # Kubernetes
 kube_version: v1.11.1
 token: b0f7b8.8d1767876297d85c
@@ -10,14 +13,11 @@ kubeadm_opts: ""
 # For example:
 # kubeadm_opts: '--apiserver-cert-extra-sans "k8s.domain.com,kubernetes.domain.com"'
 
-service_subnet: 10.96.0
-service_cidr: "{{ service_subnet }}.0/12"
-dns_name: cluster.local
-dns_ip: "{{ service_subnet }}.10"
+service_cidr: "10.96.0.0/12"
+pod_network_cidr: "10.244.0.0/16"
 
 # Network implementation('flannel', 'calico')
 network: calico
-pod_network_cidr: "10.244.0.0/16"
 
 # Change this to an appropriate interface, preferably a private network.
 # For example, on DigitalOcean, you would use eth1 as that is the default private network interface.
