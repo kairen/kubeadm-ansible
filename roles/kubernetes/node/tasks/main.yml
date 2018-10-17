@@ -7,7 +7,7 @@
 - name: Join to Kubernetes cluster
   when: reset_cluster|succeeded
   shell: |
-    kubeadm join --skip-preflight-checks \
+    kubeadm join --ignore-preflight-errors \
                  --token {{ token }} \
                  {{ groups['master'][0] }}:6443 \
                  --discovery-token-unsafe-skip-ca-verification
