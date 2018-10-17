@@ -7,10 +7,9 @@
 - name: Join to Kubernetes cluster
   when: reset_cluster|succeeded
   shell: |
-    kubeadm join --skip-preflight-checks \
-                 --token {{ token }} \
-                 {{ groups['master'][0] }}:6443 \
-                 --discovery-token-unsafe-skip-ca-verification
+    kubeadm join --token {{ token }} \
+                 --discovery-token-unsafe-skip-ca-verification \
+                 {{ groups['master'][0] }}:6443
   register: join_cluster
 
 - name: Enable and restart kubelet engine
