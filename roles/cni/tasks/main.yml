@@ -1,28 +1,28 @@
 ---
 
-- name: "Set fact {{ network }} cni variable"
-  set_fact:
-    cni: "{{ vars[network] }}"
-
 - name: Create Kubernetes addon directory
-  file: path={{ network_dir }} state=directory
+  file:
+    path: "{{ network_dir }}"
+    state: directory
 
-- name: "Copy {{ cni.name }} yml file"
-  template: src="{{ cni.template.ds }}.j2" dest={{ network_dir }}/{{ cni.template.ds }}
+- name: "Copy {{ network }} YAML files"
+  template:
+    src: "{{ item }}"
+    dest: "{{ network_dir }}/{{ item | basename | regex_replace('\\.j2','') }}"
+  with_fileglob:
+    - ../templates/{{ network }}*.j2
 
-- name: "Check {{ cni.name }} daemonset is working"
-  shell: |
-    kubectl --kubeconfig={{ kubeadmin_config }} \
-            get ds --all-namespaces | grep {{ cni.name }}
+- name: "Check {{ network }} daemonset is working"
+  shell: kubectl --kubeconfig={{ kubeadmin_config }} get ds --all-namespaces | grep {{ network }}
   delegate_to: "{{ groups['master'][0] }}"
   run_once: true
   register: check_net
   ignore_errors: true
+  changed_when: false
 
-- name: "Create {{ cni.name }} network daemonset"
+- name: "Create {{ network }} network daemonset"
   when: check_net|failed
-  shell: |
-    kubectl create --kubeconfig={{ kubeadmin_config }} \
-                   -f {{ network_dir }}/{{ cni.template.ds }}
+  command: kubectl apply --kubeconfig={{ kubeadmin_config }} -f {{ item }}
+  with_items: "{{ lookup('fileglob', '{{ network_dir }}/{{ network }}*.yml').split(',') | sort }}"
   delegate_to: "{{ groups['master'][0] }}"
   run_once: true

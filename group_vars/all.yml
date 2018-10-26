@@ -21,7 +21,9 @@ network: calico
 
 # Change this to an appropriate interface, preferably a private network.
 # For example, on DigitalOcean, you would use eth1 as that is the default private network interface.
-cni_opts: "interface=eth1" # flannel: --iface=eth1, calico: interface=eth1
+network_interface: "eth1"
+calico_cni_opts: "interface={{ network_interface }}"
+flannel_cni_opts: "--iface={{ network_interface }}"
 
 enable_dashboard: yes
 
