@@ -1,0 +1,6 @@
+---
+- name: Recreate kube-dns
+  command: kubectl --kubeconfig={{ kubeadmin_config }} -n kube-system delete pods -l k8s-app=kube-dns
+  delegate_to: "{{ groups['master'][0] }}"
+  run_once: true
+  ignore_errors: true
