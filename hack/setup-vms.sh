@@ -46,7 +46,7 @@ if [ ${HOST_NAME} == "k8s-m1" ]; then
   cd /vagrant
   set_hosts
   sudo cp ~/hosts /etc/
-  sudo ansible-playbook site.yaml
+  sudo ansible-playbook -e network_interface=eth1 site.yaml
 else
   set_hosts
   sudo cp ~/hosts /etc/

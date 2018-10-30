@@ -21,8 +21,7 @@
   changed_when: false
 
 - name: "Create {{ network }} network daemonset"
-  when: check_net|failed
-  command: kubectl apply --kubeconfig={{ kubeadmin_config }} -f {{ item }}
-  with_items: "{{ lookup('fileglob', '{{ network_dir }}/{{ network }}*.yml').split(',') | sort }}"
+  when: check_net is failed
+  command: kubectl apply --kubeconfig={{ kubeadmin_config }} -f {{ network_dir }}/
   delegate_to: "{{ groups['master'][0] }}"
   run_once: true
