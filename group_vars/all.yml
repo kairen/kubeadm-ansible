@@ -2,7 +2,7 @@
 # ansible_user: root
 
 # Kubernetes
-kube_version: v1.12.1
+kube_version: v1.12.2
 token: b0f7b8.8d1767876297d85c
 
 # 1.8.x feature: --feature-gates SelfHosting=true
@@ -21,15 +21,13 @@ network: calico
 
 # Change this to an appropriate interface, preferably a private network.
 # For example, on DigitalOcean, you would use eth1 as that is the default private network interface.
-network_interface: "eth1"
-calico_cni_opts: "interface={{ network_interface }}"
-flannel_cni_opts: "--iface={{ network_interface }}"
+network_interface: ""
 
 enable_dashboard: yes
 
-# A list of insecure registrys you might need to define
-insecure_registrys: ""
-# insecure_registrys: ['gcr.io']
+# A list of insecure registries you might need to define
+insecure_registries: []
+# insecure_registries: ['gcr.io']
 
 systemd_dir: /lib/systemd/system
 system_env_dir: /etc/sysconfig

@@ -1,6 +1,6 @@
 ---
 
-- name: kubeadm | Check if kubeadm has already run
+- name: Check if kubeadm has already run
   stat:
     path: "/etc/kubernetes/pki/ca.key"
   register: kubeadm_ca
@@ -8,6 +8,7 @@
 - name: Init cluster if needed
   include_tasks: init.yml
   when: not kubeadm_ca.stat.exists
+  run_once: yes
 
 - name: Enable and check kubelet service
   systemd:
