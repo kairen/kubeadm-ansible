@@ -28,9 +28,11 @@
   yum:
     name: "{{ pkgs }}"
     update_cache: yes
+    state: latest
 
 - name: Install kubernetes packages (Debian/Ubuntu)
   when: ansible_os_family == "Debian"
   apt:
     name: "{{ pkgs }}"
     update_cache: yes
+    state: latest
