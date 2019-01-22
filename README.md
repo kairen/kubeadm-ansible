@@ -26,6 +26,20 @@ master
 node
 ```
 
+If you're working with ubuntu, add the following properties to each host `ansible_python_interpreter='python3'`:
+```
+[master]
+192.16.35.12 ansible_python_interpreter='python3'
+
+[node]
+192.16.35.[10:11] ansible_python_interpreter='python3'
+
+[kube-cluster:children]
+master
+node
+
+```
+
 Before continuing, edit `group_vars/all.yml` to your specified configuration.
 
 For example, I choose to run `flannel` instead of calico, and thus:

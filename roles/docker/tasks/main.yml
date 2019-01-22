@@ -16,7 +16,7 @@
   template: src=docker.j2 dest={{ system_env_dir }}/docker
 
 - name: Add any insecure registries to Docker config
-  when: insecure_registries is defined and insecure_registries > 0
+  when: insecure_registries is defined and insecure_registries | length > 0
   lineinfile: dest={{ system_env_dir }}/docker regexp=^INSECURE_REGISTRY= line=INSECURE_REGISTRY="{% for reg in insecure_registries %}--insecure-registry={{ reg }} {% endfor %}"
 
 - name: Add registry to Docker config
