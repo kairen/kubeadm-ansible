@@ -17,3 +17,12 @@
     state: started
     enabled: yes
   register: started_kubelet
+
+- name: "Copy config file"
+  fetch:
+    src: /etc/kubernetes/admin.conf 
+    dest: "{{ lookup('env', 'HOME') }}/admin.conf"
+    flat: yes
+  run_once: yes
+  ignore_errors: yes
+

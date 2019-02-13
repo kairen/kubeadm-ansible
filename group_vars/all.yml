@@ -26,11 +26,21 @@ network_interface: ""
 enable_dashboard: yes
 
 # A list of insecure registries you might need to define
-insecure_registries: []
-# insecure_registries: ['gcr.io']
+# insecure_registries: []
+insecure_registries: ['gcr.io']
 
 systemd_dir: /lib/systemd/system
 system_env_dir: /etc/sysconfig
 network_dir: /etc/kubernetes/network
 kubeadmin_config: /etc/kubernetes/admin.conf
 kube_addon_dir: /etc/kubernetes/addon
+
+# Additional feature to install
+additional_features:
+  helm: false
+  metallb: false
+  healthcheck: false
+
+# temporary directory used by additional features
+tmp_dir: /tmp/kubeadm-ansible-files
+

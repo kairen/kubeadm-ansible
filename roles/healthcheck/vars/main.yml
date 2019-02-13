@@ -1,0 +1,2 @@
+---
+healthcheck_git_url: https://github.com/emrekenci/k8s-healthcheck.git
