@@ -16,6 +16,8 @@ kubeadm_opts: ""
 service_cidr: "10.96.0.0/12"
 pod_network_cidr: "10.244.0.0/16"
 
+calico_etcd_service: "10.96.232.136"
+
 # Network implementation('flannel', 'calico')
 network: calico
 

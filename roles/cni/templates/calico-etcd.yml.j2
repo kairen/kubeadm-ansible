@@ -78,6 +78,6 @@ spec:
     k8s-app: calico-etcd
   # This ClusterIP needs to be known in advance, since we cannot rely
   # on DNS to get access to etcd.
-  clusterIP: 10.96.232.136
+  clusterIP: {{ calico_etcd_service }}
   ports:
     - port: 6666
