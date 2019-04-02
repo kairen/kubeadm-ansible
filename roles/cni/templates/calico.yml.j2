@@ -13,7 +13,7 @@ metadata:
   namespace: kube-system
 data:
   # Configure this with the location of your etcd cluster.
-  etcd_endpoints: "http://10.96.232.136:6666"
+  etcd_endpoints: "http://{{ calico_etcd_service }}:6666"
 
   # If you're using TLS enabled etcd uncomment the following.
   # You must also populate the Secret below with these files.
@@ -76,7 +76,7 @@ spec:
     k8s-app: calico-etcd
   # This ClusterIP needs to be known in advance, since we cannot rely
   # on DNS to get access to etcd.
-  clusterIP: 10.96.232.136
+  clusterIP: {{ calico_etcd_service }}
   ports:
     - port: 6666
 
