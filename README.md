@@ -65,7 +65,9 @@ $ ansible-playbook site.yaml
 ==> master1: 192.16.35.12               : ok=34   changed=29   unreachable=0    failed=0
 ```
 
-Download the `admin.conf` from the master node:
+The playbook will download `/etc/kubernetes/admin.conf` file to `$HOME/admin.conf`.
+
+If it doesn't work download the `admin.conf` from the master node:
 
 ```sh
 $ scp k8s@k8s-master:/etc/kubernetes/admin.conf .
@@ -94,4 +96,41 @@ Finally, reset all kubeadm installed state using `reset-site.yaml` playbook:
 
 ```sh
 $ ansible-playbook reset-site.yaml
+```
+
+# Additional features
+These are features that you could want to install to make your life easier.
+
+Enable/disable these features in `group_vars/all.yml` (all disabled by default):
+```
+# Additional feature to install
+additional_features:
+  helm: false
+  metallb: false
+  healthcheck: false
+```
+
+## Helm
+This will install helm in your cluster (https://helm.sh/) so you can deploy charts.
+
+## MetalLB
+This will install MetalLB (https://metallb.universe.tf/), very useful if you deploy the cluster locally and you need a load balancer to access the services.
+
+## Healthcheck
+This will install k8s-healthcheck (https://github.com/emrekenci/k8s-healthcheck), a small application to report cluster status.
+
+# Utils
+Collection of scripts/utilities
+
+## Vagrantfile
+This Vagrantfile is taken from https://github.com/ecomm-integration-ballerina/kubernetes-cluster and slightly modified to copy ssh keys inside the cluster (install https://github.com/dotless-de/vagrant-vbguest is highly recommended)
+
+# Tips & Tricks
+If you use vagrant or your remote user is root, add this to `hosts.ini`
+```
+[master]
+192.16.35.12 ansible_user='root'
+
+[node]
+192.16.35.[10:11] ansible_user='root'
 ```

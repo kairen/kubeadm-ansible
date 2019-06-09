@@ -1,0 +1,4 @@
+---
+metallb_version: v0.7.3
+metallb_yaml_url: "https://raw.githubusercontent.com/google/metallb/{{ metallb_version }}/manifests/metallb.yaml"
+metallb_address_space: 192.168.205.200-192.168.205.210

@@ -1,0 +1,89 @@
+servers = [
+    {
+        :name => "k8s-nxt-head-1",
+        :type => "master",
+        :box => "ubuntu/xenial64",
+        :box_version => "20180831.0.0",
+        :eth1 => "192.168.205.16",
+        :mem => "4096",
+        :cpu => "2"
+    },
+    {
+        :name => "k8s-nxt-node-1",
+        :type => "node",
+        :box => "ubuntu/xenial64",
+        :box_version => "20180831.0.0",
+        :eth1 => "192.168.205.17",
+        :mem => "4096",
+        :cpu => "2"
+    },
+    {
+        :name => "k8s-nxt-node-2",
+        :type => "node",
+        :box => "ubuntu/xenial64",
+        :box_version => "20180831.0.0",
+        :eth1 => "192.168.205.18",
+        :mem => "4096",
+        :cpu => "2"
+    }
+]
+
+# This script to install k8s using kubeadm will get executed after a box is provisioned
+$configureBox = <<-SCRIPT
+    # install docker v17.03
+    # reason for not using docker provision is that it always installs latest version of the docker, but kubeadm requires 17.03 or older
+    apt-get update
+    apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+    add-apt-repository "deb https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable"
+    apt-get update && apt-get install -y docker-ce=$(apt-cache madison docker-ce | grep 17.03 | head -1 | awk '{print $3}')
+    # run docker commands as vagrant user (sudo not required)
+    usermod -aG docker vagrant
+    # install kubeadm
+    apt-get install -y apt-transport-https curl
+    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+    cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+    deb http://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+    apt-get update
+    apt-get install -y kubelet kubeadm kubectl
+    apt-mark hold kubelet kubeadm kubectl
+    # kubelet requires swap off
+    swapoff -a
+    # keep swap off after reboot
+    sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+    # ip of this box
+    IP_ADDR=`ifconfig enp0s8 | grep Mask | awk '{print $2}'| cut -f2 -d:`
+    # set node-ip
+    sudo sed -i "/^[^#]*KUBELET_EXTRA_ARGS=/c\KUBELET_EXTRA_ARGS=--node-ip=$IP_ADDR" /etc/default/kubelet
+    sudo systemctl restart kubelet
+    sudo cp /tmp/authorized_keys_root /root/.ssh/authorized_keys
+SCRIPT
+
+Vagrant.configure("2") do |config|
+
+    servers.each do |opts|
+        config.vm.define opts[:name] do |config|
+
+            config.vm.box = opts[:box]
+            config.vm.box_version = opts[:box_version]
+            config.vm.hostname = opts[:name]
+            config.vm.network :private_network, ip: opts[:eth1]
+            config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "/tmp/authorized_keys_root"
+
+            config.vm.provider "virtualbox" do |v|
+
+                v.name = opts[:name]
+                v.customize ["modifyvm", :id, "--groups", "/k8s_nxt"]
+                v.customize ["modifyvm", :id, "--memory", opts[:mem]]
+                v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
+
+            end
+
+            config.vm.provision "shell", inline: $configureBox
+
+        end
+
+    end
+
+end 
