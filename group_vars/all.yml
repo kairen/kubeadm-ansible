@@ -2,7 +2,7 @@
 # ansible_user: root
 
 # Kubernetes
-kube_version: v1.13.0
+kube_version: v1.14.0
 token: b0f7b8.8d1767876297d85c
 
 # 1.8.x feature: --feature-gates SelfHosting=true
