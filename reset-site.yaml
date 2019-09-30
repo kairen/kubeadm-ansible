@@ -10,7 +10,7 @@
 
     - name: Delete flannel.1 interface
       command: ip link delete flannel.1
-      when: network == "flannel"
+      when: network == "flannel" or network == "canal"
       ignore_errors: True
 
     - name: Delete cni0 interface
