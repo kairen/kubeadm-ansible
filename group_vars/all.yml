@@ -18,7 +18,7 @@ pod_network_cidr: "10.244.0.0/16"
 
 calico_etcd_service: "10.96.232.136"
 
-# Network implementation('flannel', 'calico')
+# Network implementation('flannel', 'calico', 'canal')
 network: calico
 
 # Change this to an appropriate interface, preferably a private network.
