@@ -126,6 +126,7 @@ Collection of scripts/utilities
 This Vagrantfile is taken from https://github.com/ecomm-integration-ballerina/kubernetes-cluster and slightly modified to copy ssh keys inside the cluster (install https://github.com/dotless-de/vagrant-vbguest is highly recommended)
 
 # Tips & Tricks
+## Specify user for Ansible
 If you use vagrant or your remote user is root, add this to `hosts.ini`
 ```
 [master]
@@ -134,3 +135,34 @@ If you use vagrant or your remote user is root, add this to `hosts.ini`
 [node]
 192.16.35.[10:11] ansible_user='root'
 ```
+
+## Access Kubernetes Dashboard
+As of release 1.7 Dashboard no longer has full admin privileges granted by default, so you need to create a token to access the resources:
+```sh
+$ kubectl -n kube-system create sa dashboard
+$ kubectl create clusterrolebinding dashboard --clusterrole cluster-admin --serviceaccount=kube-system:dashboard
+$ kubectl -n kube-system get sa dashboard -o yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  creationTimestamp: 2017-11-27T17:06:41Z
+  name: dashboard
+  namespace: kube-system
+  resourceVersion: "69076"
+  selfLink: /api/v1/namespaces/kube-system/serviceaccounts/dashboard
+  uid: 56b880bf-d395-11e7-9528-448a5ba4bd34
+secrets:
+- name: dashboard-token-vg52j
+
+$ kubectl -n kube-system describe secrets dashboard-token-vg52j
+...
+token:      eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkYXNoYm9hcmQtdG9rZW4tdmc1MmoiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGFzaGJvYXJkIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiNTZiODgwYmYtZDM5NS0xMWU3LTk1MjgtNDQ4YTViYTRiZDM0Iiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmRhc2hib2FyZCJ9.bVRECfNS4NDmWAFWxGbAi1n9SfQ-TMNafPtF70pbp9Kun9RbC3BNR5NjTEuKjwt8nqZ6k3r09UKJ4dpo2lHtr2RTNAfEsoEGtoMlW8X9lg70ccPB0M1KJiz3c7-gpDUaQRIMNwz42db7Q1dN7HLieD6I4lFsHgk9NPUIVKqJ0p6PNTp99pBwvpvnKX72NIiIvgRwC2cnFr3R6WdUEsuVfuWGdF-jXyc6lS7_kOiXp2yh6Ym_YYIr3SsjYK7XUIPHrBqWjF-KXO_AL3J8J_UebtWSGomYvuXXbbAUefbOK4qopqQ6FzRXQs00KrKa8sfqrKMm_x71Kyqq6RbFECsHPA
+
+$ kubectl proxy
+```
+> Copy and paste the `token` from above to dashboard.
+
+Login the dashboard:
+- Dashboard: [https://API_SERVER:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/](https://API_SERVER:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/)
+- Logging: [https://API_SERVER:8001/api/v1/namespaces/kube-system/services/kibana-logging/proxy/](https://API_SERVER:8001/api/v1/namespaces/kube-system/services/kibana-logging/proxy/)
+
