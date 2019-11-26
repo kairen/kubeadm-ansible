@@ -26,7 +26,7 @@
 - name: Install kubernetes packages (RHEL/CentOS)
   when: ansible_os_family == "RedHat"
   yum:
-    name: "{{ item }}-{{ kube_version | replace('v', '') }}"
+    name: "{{ pkgs }}"
     update_cache: yes
     state: installed
   with_items: "{{ pkgs }}"
@@ -34,7 +34,7 @@
 - name: Install kubernetes packages (Debian/Ubuntu)
   when: ansible_os_family == "Debian"
   apt:
-    name: "{{ item }}-{{ kube_version | replace('v', '') }}"
+    name: "{{ pkgs }}"
     update_cache: yes
     state: installed
   with_items: "{{ pkgs }}"
