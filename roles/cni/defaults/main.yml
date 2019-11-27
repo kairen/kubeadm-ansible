@@ -2,4 +2,3 @@
 
 calico_cni_opts: "interface={{ network_interface }}"
 flannel_cni_opts: "--iface={{ network_interface }}"
-
