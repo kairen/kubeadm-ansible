@@ -36,5 +36,5 @@
   apt:
     name: "{{ pkgs }}"
     update_cache: yes
-    state: installed
+    state: present
   with_items: "{{ pkgs }}"
