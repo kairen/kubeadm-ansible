@@ -16,7 +16,7 @@
   apt_repository:
     repo: deb https://download.docker.com/linux/ubuntu xenial stable
     state: present
-    filename: 'docker'
+    filename: "docker"
 
 - name: Add Docker yum repository
   when: ansible_os_family == "RedHat"
@@ -24,15 +24,15 @@
     name: Docker
     description: Docker Repository
     file: docker
-    baseurl: https://yum.dockerproject.org/repo/main/centos/7/
+    baseurl: https://download.docker.com/linux/centos/7/x86_64/stable/
     enabled: yes
     gpgcheck: yes
-    gpgkey: https://yum.dockerproject.org/gpg
+    gpgkey: https://download.docker.com/linux/centos/gpg
 
 - name: Install docker engine (RHEL/CentOS)
   when: ansible_os_family == "RedHat"
   yum:
-    name: "docker-engine-{{ docker_version }}.*"
+    name: "docker-ce-selinux-{{ docker_version }}.*"
     state: present
 
 - name: Install docker engine (Debian/Ubuntu)
