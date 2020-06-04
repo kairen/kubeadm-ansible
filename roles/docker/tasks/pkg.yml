@@ -32,7 +32,7 @@
 - name: Install docker engine (RHEL/CentOS)
   when: ansible_os_family == "RedHat"
   yum:
-    name: "docker-engine-{{ docker_version }}.*"
+    name: "docker-ce-selinux-{{ docker_version }}.*"
     state: present
 
 - name: Install docker engine (Debian/Ubuntu)
