@@ -15,6 +15,9 @@
                  {{ kubeadm_opts }} \
                  {{ init_opts }}
   register: init_cluster
+  # See: https://github.com/jetstack/cert-manager/issues/2640 with using kubeadm + calico + cert-manager
+  environment:
+    no_proxy: "$no_proxy,.svc,.svc.cluster.local"
 
 - name: Create Kubernetes config directory
   file:
