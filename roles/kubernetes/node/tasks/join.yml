@@ -11,5 +11,8 @@
                 --discovery-token-unsafe-skip-ca-verification \
                 {{ master_ip }}:6443
   register: join_cluster
+  # See: https://github.com/jetstack/cert-manager/issues/2640 with using kubeadm + calico + cert-manager
+  environment:
+    no_proxy: "$no_proxy,.svc,.svc.cluster.local"
   notify:
     - Recreate kube-dns
