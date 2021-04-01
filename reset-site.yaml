@@ -5,7 +5,7 @@
   become: yes
   tasks:
     - name: Reset Kubernetes component
-      shell: "kubeadm reset --force"
+      shell: "kubeadm reset --force --cri-socket=/var/run/{{ container_runtime }}/{{ container_runtime }}.sock"
       ignore_errors: True
 
     - name: Delete flannel.1 interface
@@ -17,3 +17,35 @@
       command: ip link delete cni0
       when: network == "flannel"
       ignore_errors: True
+
+    - name: Delete tunl0 interface
+      command: modprobe -r ipip
+      when: network == "calico"
+      ignore_errors: True
+
+    - name: Find network interfaces for Kubernetes
+      shell: "ip addr | grep {{ item }}"
+      with_items:
+        - "docker0"
+        - "flannel.1"
+        - "cni0"
+        - "tunl0"
+      register: find_eths
+      ignore_errors: True
+
+    - name: Delete network interfaces for Kubernetes
+      when: item.stdout != ''
+      shell: "ip link delete {{ item.item }}"
+      with_items: "{{ find_eths['results'] }}"
+      ignore_errors: True
+
+    - name: Find blackhole route rule
+      shell: "ip route | awk '/blackhole/ {print $2}'"
+      register: find_blackhole
+      ignore_errors: True
+
+    - name: Delete blackhole route rule
+      when: find_blackhole.stdout != ''
+      shell: "ip route del {{ find_blackhole.stdout }}"
+      ignore_errors: True
+

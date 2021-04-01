@@ -1,7 +1,7 @@
 ---
 
 - name: Reset Kubernetes component
-  shell: "kubeadm reset --force"
+  shell: "kubeadm reset --force --cri-socket=/var/run/{{ container_runtime }}/{{ container_runtime }}.sock"
   register: reset_cluster
 
 - name: Init Kubernetes cluster
@@ -12,6 +12,7 @@
                  --pod-network-cidr {{ pod_network_cidr }} \
                  --token {{ token }} \
                  --apiserver-advertise-address {{ master_ip }} \
+                 --cri-socket=/var/run/{{ container_runtime }}/{{ container_runtime }}.sock \
                  {{ kubeadm_opts }} \
                  {{ init_opts }}
   register: init_cluster

@@ -44,3 +44,5 @@ additional_features:
 # temporary directory used by additional features
 tmp_dir: /tmp/kubeadm-ansible-files
 
+# Container runtimes ('containerd', 'crio')
+container_runtime: containerd

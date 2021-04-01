@@ -1,7 +1,7 @@
 ---
 
 - name: Reset Kubernetes component
-  shell: "kubeadm reset --force"
+  shell: "kubeadm reset --force --cri-socket=/var/run/{{ container_runtime }}/{{ container_runtime }}.sock"
   register: reset_cluster
 
 - name: Join to Kubernetes cluster
@@ -9,6 +9,7 @@
   shell: |
     kubeadm join --token {{ token }} \
                 --discovery-token-unsafe-skip-ca-verification \
+                --cri-socket=/var/run/{{ container_runtime }}/{{ container_runtime }}.sock \
                 {{ master_ip }}:6443
   register: join_cluster
   # See: https://github.com/jetstack/cert-manager/issues/2640 with using kubeadm + calico + cert-manager
