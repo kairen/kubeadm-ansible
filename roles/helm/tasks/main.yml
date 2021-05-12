@@ -19,8 +19,10 @@
         url: https://raw.githubusercontent.com/helm/helm/master/scripts/get
         dest: "{{ tmp_dir }}/get_helm.sh"
         mode: 0755
-  
+
     - name: "Run the installer"
+      environment:
+          DESIRED_VERSION: "{{ helm_version }}"
       shell: "{{ tmp_dir }}/get_helm.sh"
 
   when: helm_exists.rc > 0
